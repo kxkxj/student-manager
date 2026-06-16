@@ -5,6 +5,7 @@
 #include "utils.h"
 #include<vector>
 #include<algorithm>
+#include<iomanip>
 void StudentManager::addStudent(){
     int id;
     std::string name;
@@ -71,20 +72,23 @@ void StudentManager::queryStudent(int _id){
         std::cout<<"学号未存在"<<std::endl;
         return ;
     }
-    it->second.getid();
-    it->second.getname();
-    it->second.getscores();
-    return ;
+    std::cout<<std::left<<std::setw(8)<<"学号"
+             <<std::setw(12)<<"姓名"
+             <<"课程信息"<<std::endl;
+    std::cout<<"------------------------------------------------"<<std::endl;
+    it->second.display();
 }
 void StudentManager::displayStudent()const{
     if(students.empty()) {
         std::cout<<"当前管理系统未录入学生信息"<<std::endl;
         return ;
     }
+    std::cout<<std::left<<std::setw(8)<<"学号"
+             <<std::setw(12)<<"姓名"
+             <<"课程信息"<<std::endl;
+    std::cout<<"------------------------------------------------"<<std::endl;
     for(auto it=students.begin();it!=students.end();++it){
-    it->second.getid();
-    it->second.getname();
-    it->second.getscores();
+        it->second.display();
     }
 }
 void StudentManager::clcStatistics(){
@@ -211,11 +215,16 @@ void StudentManager::sortByScore(){
         return a.score>b.score;
     });
     std::cout<<course<<"成绩排名："<<std::endl;
+    std::cout<<std::left<<std::setw(8)<<"名次"
+             <<std::setw(10)<<"学号"
+             <<std::setw(12)<<"姓名"
+             <<"成绩"<<std::endl;
+    std::cout<<"----------------------------------------"<<std::endl;
     for(size_t i=0;i<entries.size();++i){
-        std::cout<<"第"<<i+1<<"名：";
-        std::cout<<"学生id:"<<entries[i].id<<" ";
-        std::cout<<"学生姓名："<<entries[i].name<<" ";
-        std::cout<<"学生成绩："<<entries[i].score<<std::endl;
+        std::cout<<std::left<<std::setw(8)<<i+1
+                 <<std::setw(10)<<entries[i].id
+                 <<std::setw(12)<<entries[i].name
+                 <<std::setw(6)<<std::fixed<<std::setprecision(1)<<entries[i].score<<std::endl;
     }
 }
 void StudentManager::listFailedStudents(){
@@ -228,9 +237,15 @@ void StudentManager::listFailedStudents(){
         if(it2!=it.second.scores.end()&&it2->second<60){
             if(!hasFailed){
                 std::cout<<"不及格学生名单："<<std::endl;
+                std::cout<<std::left<<std::setw(10)<<"姓名"
+                         <<std::setw(8)<<"学号"
+                         <<"成绩"<<std::endl;
+                std::cout<<"--------------------------------"<<std::endl;
                 hasFailed=true;
             }
-            std::cout<<it.second.name<<"("<<it.first<<"):"<<it2->second<<"分"<<std::endl;
+            std::cout<<std::left<<std::setw(10)<<it.second.name
+                     <<std::setw(8)<<it.first
+                     <<std::right<<std::setw(6)<<std::fixed<<std::setprecision(1)<<it2->second<<std::endl;
         }
     }
     if(!hasFailed){
@@ -245,7 +260,7 @@ void StudentManager::rankStudents(){
         double avg;
         std::vector<std::string> missing;
     };
-    int max=0;
+    size_t max=0;
     std::set<std::string> allCourses;
     auto maxStudent=students.end();
     for(auto it=students.begin();it!=students.end();++it){  
@@ -278,16 +293,24 @@ void StudentManager::rankStudents(){
     [mode](const rankEntry &a,const rankEntry& b){
         return mode==1?a.avg>b.avg:a.total>b.total;
     });
+    std::cout << std::left << std::setw(6) << "名次"
+              << std::setw(10) << "姓名"
+              << std::setw(8) << "学号"
+              << std::setw(10) << "总分"
+              << std::setw(10) << "平均分"
+              << "少修课程" << std::endl;
+    std::cout << "------------------------------------------------------------" << std::endl;
     for (size_t i = 0; i < entries.size(); ++i) {
-        std::cout << i + 1 << ". " << entries[i].name
-                << "(" << entries[i].id << ")"
-              << " 总分:" << entries[i].total
-              << " 平均分:" << entries[i].avg;
-    if (!entries[i].missing.empty()) {
-        std::cout << " 少修:";
-        for (auto &m : entries[i].missing) std::cout << m << " ";
+        std::cout << std::left << std::setw(6) << i + 1
+                  << std::setw(10) << entries[i].name
+                  << std::setw(8) << entries[i].id;
+        std::cout << std::right << std::setw(8) << std::fixed << std::setprecision(1) << entries[i].total
+                  << std::setw(10) << entries[i].avg << std::left << "  ";
+        if (!entries[i].missing.empty()) {
+            std::cout << "少修:";
+            for (auto &m : entries[i].missing) std::cout << m << " ";
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-}
 
 }

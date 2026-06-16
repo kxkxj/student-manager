@@ -14,6 +14,7 @@ public:
     void getid()const;
     void getname()const;
     void getscores()const;
+    void display()const;
     void setid(int new_id);
     void setname(std::string new_name);
     void setscores(std::map<std::string,double> new_scores);
