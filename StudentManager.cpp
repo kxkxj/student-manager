@@ -144,7 +144,7 @@ void StudentManager::clcStatistics(){
     }
 }
 void StudentManager::saveToFile(){
-    std::ofstream fout("save.txt");
+    std::ofstream fout("build/save.txt");
     if(!fout.is_open()){
         std::cout<<"文件打开失败!!!\n";
         return ;
@@ -161,7 +161,7 @@ void StudentManager::saveToFile(){
     return ;
 }
 void StudentManager::loadFromFile(){
-    std::ifstream fin("save.txt");
+    std::ifstream fin("build/save.txt");
     if(!fin.is_open()){
         std::cout<<"文件打开失败!!!\n";
         return ;
