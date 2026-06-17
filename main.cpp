@@ -19,6 +19,7 @@ enum MenuChoice {
 
 int main() {
     SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
 
     StudentManager manager;
     manager.loadFromFile();

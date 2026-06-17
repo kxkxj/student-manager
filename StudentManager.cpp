@@ -149,6 +149,9 @@ void StudentManager::saveToFile(){
         std::cout<<"文件打开失败!!!\n";
         return ;
     }
+    // Write UTF-8 BOM to ensure the file is recognized as UTF-8
+    unsigned char bom[] = {0xEF, 0xBB, 0xBF};
+    fout.write(reinterpret_cast<char*>(bom), sizeof(bom));
     for(auto it=students.begin();it!=students.end();++it){
         fout<<it->first<<" "<<it->second.name<<" ";
         for(auto it2=it->second.scores.begin();it2!=it->second.scores.end();++it2){
@@ -168,6 +171,15 @@ void StudentManager::loadFromFile(){
     }
     students.clear();
     std::string line;
+    // Skip UTF-8 BOM (0xEF 0xBB 0xBF) if present
+    char bom[3];
+    fin.read(bom, 3);
+    if (!(static_cast<unsigned char>(bom[0]) == 0xEF &&
+          static_cast<unsigned char>(bom[1]) == 0xBB &&
+          static_cast<unsigned char>(bom[2]) == 0xBF)) {
+        // Not a BOM, seek back
+        fin.seekg(0);
+    }
     while(std::getline(fin,line)){
         if(line.empty()) continue;
         std::istringstream ss(line);
@@ -293,11 +305,11 @@ void StudentManager::rankStudents(){
     [mode](const rankEntry &a,const rankEntry& b){
         return mode==1?a.avg>b.avg:a.total>b.total;
     });
-    std::cout << std::left << std::setw(6) << "名次"
+    std::cout << std::left << std::setw(8) << "名次"
               << std::setw(10) << "姓名"
-              << std::setw(8) << "学号"
+              << std::setw(16) << "学号"
               << std::setw(10) << "总分"
-              << std::setw(10) << "平均分"
+              << std::setw(16) << "平均分"
               << "少修课程" << std::endl;
     std::cout << "------------------------------------------------------------" << std::endl;
     for (size_t i = 0; i < entries.size(); ++i) {
